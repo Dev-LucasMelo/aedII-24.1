@@ -49,6 +49,8 @@ arvore inserir(arvore raiz, int chave, int *cresceu){
 
         } else {
             raiz->esq = inserir(raiz->esq, chave);
+
+            //verificação se a sub-árvore cresceu, considerando inserir na esquerda
         }
         return raiz;
     }
@@ -63,12 +65,38 @@ arvore inserir(arvore raiz, int chave, int *cresceu){
 }
 
 arvore rotacionar(arvore raiz) {
-    if(raiz->fb > 0) {
+    arvore p, u, v;
+    p = raiz;
+
+    //p - pivô
+    if(p->fb > 0) {
         //rotação esquerda
-        //u=raiz->dir
-        if(raiz->dir->fb >= 0){
+        u=raiz->dir;
+        if(u->fb >= 0){
+            //caso fb(p, u) = [(+2, +1), (+2, 0)]
+            if(u->fb == 1) {
+                p->fb = 0;
+                u->fb = 0;
+            } else {
+                p->fb = 1;
+                u->fb = -1;
+            }
             return rotacao_simples_esquerda(raiz);
         } else {
+            v=u->esq;
+            //fb(p,u,v) = [(+2,-1,0),(+2,-1,-1),(+2,-1, 1)]
+            switch(v->fb) {
+                case 0:
+                    p->fb = 0;
+                    u->fb = 0;
+                    v->fb = 0;
+                    break;
+                case 1:
+                    break;
+                case -1:
+                    break;
+            }
+
            return rotacao_dupla_esquerda(raiz);
         }
     } else {
