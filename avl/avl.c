@@ -144,6 +144,85 @@ arvore rotacao_dupla_esquerda(arvore raiz) {
     return raiz;
 }
 
+arvore remover (arvore raiz, int valor, int *diminuiu) {
+    //caso base - elemento não existe
+    if(raiz == NULL) {
+        *diminuiu = 0;
+        return NULL;
+    }
+    //caso base - elemento encontrado
+    if(raiz->chave == valor) {
+        //ZERO FILHOS
+        if(raiz->esq == NULL && raiz->dir == NULL) {
+            free(raiz);
+            *diminuiu = 1;
+            return NULL;
+        }
+        //1 Filho (esq)
+        if(raiz->esq != NULL && raiz->dir == NULL) {
+            arvore esquerda = raiz->esq;
+            free(raiz);
+            *diminuiu = 1;
+            return esquerda;
+        }
+        //1 Filho (dir)
+        if(raiz->esq == NULL && raiz->dir != NULL) {
+            arvore direita = raiz->dir;
+            free(raiz);
+            *diminuiu = 1;
+            return direita;
+        }
+        //2 filhos
+        if(raiz->esq != NULL && raiz->dir != NULL) {
+            arvore maior = procurar_maior(raiz->esq);
+            raiz->chave = maior->chave;
+            raiz->esq = remover(raiz->esq, maior->chave, diminuiu);
+            return raiz;
+        }
+    }
+    //caso recursivo
+    if(valor > raiz->chave) {
+        raiz->dir = remover(raiz->dir, valor, diminuiu);
+        //Atualiza fator de balanço
+        //Fator de balanço atual ? => raiz->fb
+        //subárvore diminuiu ? => *diminuiu
+        //Remoção esquerda ou direita => direita
+        if(*diminuiu) {
+            switch(raiz->fb) {
+                case -1:
+                    raiz->fb = -2; //=>rotação
+                    return rotacionar(raiz);
+                case 0:
+                    raiz->fb = -1;
+                    *diminuiu = 0;
+                    break;
+                case +1:
+                    raiz->fb = 0;
+                    *diminuiu = 1;
+                    break;
+            }
+        }
+
+    } else {
+        raiz->esq = remover(raiz->esq, valor, diminuiu);
+        //Atualiza fator de balanço
+        //Fator de balanço atual ? => raiz->fb
+        //subárvore diminuiu ? => *diminuiu
+        //Remoção esquerda ou direita => esquerda
+
+
+
+
+
+    }
+    return raiz;
+
+}
+
+
+
+
+
 
 int main(int argc, char* argv[]) {
     //declaração de uma variável do tipo árvore
